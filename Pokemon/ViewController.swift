@@ -26,6 +26,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         collection.delegate = self
         collection.dataSource = self
         serachBar.delegate = self
+        serachBar.returnKeyType = UIReturnKeyType.Done
         initAudio()
         parsePokemonCSV()
         
@@ -94,7 +95,14 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let poke:Pokemon
         
+        if inserachMode{
+            poke = filteredPolemon[indexPath.row]
+        }else{
+            poke = pokemon[indexPath.row]
+        }
+        performSegueWithIdentifier("PokemonDetailVC", sender: poke)
         
     }
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -126,5 +134,15 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             collection.reloadData()
         }
     }
-}
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "PokemonDetailVC" {
+            if let detailsVC = segue.destinationViewController as? PokemonDetailVC {
+                if let poke = sender as? Pokemon {
+                   detailsVC.pokemon = poke
+                }
+            }
+        }
+    }
 
+
+}
